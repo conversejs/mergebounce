@@ -27,7 +27,7 @@ const nativeMin = Math.min;
  *
  * @static
  * @category Function
- * @param {Function} func The function to stashbounce.
+ * @param {Function} func The function to mergebounce.
  * @param {number} [wait=0] The number of milliseconds to delay.
  * @param {Object} [options={}] The options object.
  * @param {number} [options.maxWait]
@@ -36,20 +36,20 @@ const nativeMin = Math.min;
  * @example
  *
  * // Avoid costly calculations while the window size is in flux.
- * window.addEventListener('resize', stashbounce(calculateLayout, 150));
+ * window.addEventListener('resize', mergebounce(calculateLayout, 150));
  *
  * // Invoke `sendMail` when clicked, debouncing subsequent calls.
- * element.addEventListner('click', stashbounce(sendMail, 300));
+ * element.addEventListner('click', mergebounce(sendMail, 300));
  *
  * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
- * const stashbounced = stashbounce(batchLog, 250, { 'maxWait': 1000 });
+ * const mergebounced = mergebounce(batchLog, 250, { 'maxWait': 1000 });
  * const source = new EventSource('/stream');
- * jQuery(source).on('message', stashbounced);
+ * jQuery(source).on('message', mergebounced);
  *
  * // Cancel the trailing debounced invocation.
- * window.addEventListener('popstate', stashbounced.cancel);
+ * window.addEventListener('popstate', mergebounced.cancel);
  */
-function stashbounce(func, wait, options) {
+function mergebounce(func, wait, options) {
   let lastArgs = [],
       lastThis,
       maxWait,
@@ -187,4 +187,4 @@ function stashbounce(func, wait, options) {
   return debounced;
 }
 
-export default stashbounce;
+export default mergebounce;

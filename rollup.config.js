@@ -9,12 +9,12 @@ const includePathOptions = {
 
 
 export default {
-  input: 'stashbounce.js',
+  input: 'mergebounce.js',
   output: [
     {
-      file: 'dist/stashbounce.js',
+      file: 'dist/mergebounce.js',
       format: 'iife',
-      name: 'stashbounce',
+      name: 'mergebounce',
     }
   ],
   plugins: [ includePaths(includePathOptions) ],

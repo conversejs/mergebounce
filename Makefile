@@ -7,15 +7,15 @@ node_modules: package.json package-lock.json
 
 .PHONY: eslint
 eslint: node_modules
-	$(ESLINT) stashbounce.js
+	$(ESLINT) mergebounce.js
 
 .PHONY: check
-check: eslint
+check: eslint dist
 	$(KARMA) start karma.conf.js $(ARGS)
 
 
-dist/stashdebounce.js:
+dist/mergebounce.js:
 	$(ROLLUP) --config rollup.config.js
 
 .PHONY: check
-dist: node_modules stashbounce.js dist/stashdebounce.js
+dist: node_modules mergebounce.js dist/mergebounce.js
