@@ -1,6 +1,7 @@
-import isObject from './isObject.js';
-import now from './now.js';
-import toNumber from './toNumber.js';
+import isObject from 'lodash-es/isObject.js';
+import merge from 'lodash-es/merge.js';
+import now from 'lodash-es/now.js';
+import toNumber from 'lodash-es/toNumber.js';
 
 /** Error message constants. */
 const FUNC_ERROR_TEXT = 'Expected a function';
@@ -49,7 +50,7 @@ const nativeMin = Math.min;
  * window.addEventListener('popstate', stashdebounced.cancel);
  */
 function debounce(func, wait, options) {
-  let lastArgs,
+  let lastArgs = [],
       lastThis,
       maxWait,
       result,
@@ -70,8 +71,8 @@ function debounce(func, wait, options) {
   function invokeFunc(time) {
     const args = lastArgs;
     const thisArg = lastThis;
-
-    lastArgs = lastThis = undefined;
+    lastArgs = [];
+    lastThis = undefined;
     lastInvokeTime = time;
     result = func.apply(thisArg, args);
     return result;
@@ -122,7 +123,8 @@ function debounce(func, wait, options) {
     if (lastArgs) {
       return invokeFunc(time);
     }
-    lastArgs = lastThis = undefined;
+    lastArgs = [];
+    lastThis = undefined;
     return result;
   }
 
@@ -131,18 +133,36 @@ function debounce(func, wait, options) {
       clearTimeout(timerId);
     }
     lastInvokeTime = 0;
-    lastArgs = lastCallTime = lastThis = timerId = undefined;
+    lastArgs = [];
+    lastCallTime = lastThis = timerId = undefined;
   }
 
   function flush() {
     return timerId === undefined ? result : trailingEdge(now());
   }
 
+  function mergeArguments(args) {
+    return args.reduce((acc, newValue) => {
+      if (!newValue) {
+        return acc;
+      }
+      const idx = args.indexOf(newValue);
+      const oldValue = lastArgs[idx];
+      let mergedValue;
+      if (Array.isArray(oldValue) && Array.isArray(newValue)) {
+        mergedValue = [...oldValue, ...newValue];
+      } else if (isObject(oldValue) && isObject(newValue)) {
+        mergedValue = merge(oldValue, newValue);
+      }
+      [...acc.splice(0, idx), mergedValue, ...args.splice(idx+1)]
+    }, []);
+  }
+
   function debounced() {
     const time = now();
     const isInvoking = shouldInvoke(time);
 
-    lastArgs = arguments;
+    lastArgs = mergeArguments(Array.from(arguments));
     lastThis = this;
     lastCallTime = time;
 
