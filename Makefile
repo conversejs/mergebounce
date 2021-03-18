@@ -14,8 +14,8 @@ check: eslint dist
 	$(KARMA) start karma.conf.js $(ARGS)
 
 
-dist/mergebounce.js:
+dist/mergebounce.js: node_modules mergebounce.js
 	$(ROLLUP) --config rollup.config.js
 
 .PHONY: check
-dist: node_modules mergebounce.js dist/mergebounce.js
+dist: dist/mergebounce.js

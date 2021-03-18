@@ -142,20 +142,16 @@ function mergebounce(func, wait, options) {
   }
 
   function mergeArguments(args) {
-    return args.reduce((acc, newValue) => {
-      if (!newValue) {
-        return acc;
+    if (lastArgs.length) {
+      if (!args.length) {
+        return lastArgs;
       }
-      const idx = args.indexOf(newValue);
-      const oldValue = lastArgs[idx];
-      let mergedValue;
-      if (Array.isArray(oldValue) && Array.isArray(newValue)) {
-        mergedValue = [...oldValue, ...newValue];
-      } else if (isObject(oldValue) && isObject(newValue)) {
-        mergedValue = merge(oldValue, newValue);
-      }
-      [...acc.splice(0, idx), mergedValue, ...args.splice(idx+1)]
-    }, []);
+      return merge(lastArgs, args);
+    } else if (args.length) {
+      return args;
+    } else {
+      return [];
+    }
   }
 
   function debounced() {
