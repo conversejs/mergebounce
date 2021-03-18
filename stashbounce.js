@@ -3,92 +3,73 @@ import now from './now.js';
 import toNumber from './toNumber.js';
 
 /** Error message constants. */
-var FUNC_ERROR_TEXT = 'Expected a function';
+const FUNC_ERROR_TEXT = 'Expected a function';
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max,
-    nativeMin = Math.min;
+const nativeMax = Math.max;
+const nativeMin = Math.min;
 
 /**
  * Creates a debounced function that delays invoking `func` until after `wait`
  * milliseconds have elapsed since the last time the debounced function was
  * invoked. The debounced function comes with a `cancel` method to cancel
  * delayed `func` invocations and a `flush` method to immediately invoke them.
- * Provide `options` to indicate whether `func` should be invoked on the
- * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
- * with the last arguments provided to the debounced function. Subsequent
- * calls to the debounced function return the result of the last `func`
- * invocation.
  *
- * **Note:** If `leading` and `trailing` options are `true`, `func` is
- * invoked on the trailing edge of the timeout only if the debounced function
- * is invoked more than once during the `wait` timeout.
+ * This function differs from lodash's debounce by merging all passed objects
+ * before passing them to the final invoked function.
  *
- * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
- * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ * Because of this, invoking can only happen on the trailing edge, since
+ * passed-in data would be discarded if invoking happened on the leading edge.
  *
- * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
- * for details over the differences between `_.debounce` and `_.throttle`.
+ * If `wait` is `0`, `func` invocation is deferred until to the next tick,
+ * similar to `setTimeout` with a timeout of `0`.
  *
  * @static
- * @memberOf _
- * @since 0.1.0
  * @category Function
  * @param {Function} func The function to debounce.
  * @param {number} [wait=0] The number of milliseconds to delay.
  * @param {Object} [options={}] The options object.
- * @param {boolean} [options.leading=false]
- *  Specify invoking on the leading edge of the timeout.
  * @param {number} [options.maxWait]
  *  The maximum time `func` is allowed to be delayed before it's invoked.
- * @param {boolean} [options.trailing=true]
- *  Specify invoking on the trailing edge of the timeout.
  * @returns {Function} Returns the new debounced function.
  * @example
  *
  * // Avoid costly calculations while the window size is in flux.
- * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ * window.addEventListener('resize', stashdebounce(calculateLayout, 150));
  *
  * // Invoke `sendMail` when clicked, debouncing subsequent calls.
- * jQuery(element).on('click', _.debounce(sendMail, 300, {
- *   'leading': true,
- *   'trailing': false
- * }));
+ * element.addEventListner('click', stashdebounce(sendMail, 300));
  *
  * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
- * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
- * var source = new EventSource('/stream');
- * jQuery(source).on('message', debounced);
+ * const stashdebounced = stashdebounce(batchLog, 250, { 'maxWait': 1000 });
+ * const source = new EventSource('/stream');
+ * jQuery(source).on('message', stashdebounced);
  *
  * // Cancel the trailing debounced invocation.
- * jQuery(window).on('popstate', debounced.cancel);
+ * window.addEventListener('popstate', stashdebounced.cancel);
  */
 function debounce(func, wait, options) {
-  var lastArgs,
+  let lastArgs,
       lastThis,
       maxWait,
       result,
       timerId,
       lastCallTime,
       lastInvokeTime = 0,
-      leading = false,
-      maxing = false,
-      trailing = true;
+      maxing = false;
 
   if (typeof func != 'function') {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   wait = toNumber(wait) || 0;
   if (isObject(options)) {
-    leading = !!options.leading;
     maxing = 'maxWait' in options;
     maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
   }
 
   function invokeFunc(time) {
-    var args = lastArgs,
-        thisArg = lastThis;
+    const args = lastArgs;
+    const thisArg = lastThis;
 
     lastArgs = lastThis = undefined;
     lastInvokeTime = time;
@@ -101,23 +82,21 @@ function debounce(func, wait, options) {
     lastInvokeTime = time;
     // Start the timer for the trailing edge.
     timerId = setTimeout(timerExpired, wait);
-    // Invoke the leading edge.
-    return leading ? invokeFunc(time) : result;
+    return result;
   }
 
   function remainingWait(time) {
-    var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime,
-        timeWaiting = wait - timeSinceLastCall;
-
+    const timeSinceLastCall = time - lastCallTime;
+    const timeSinceLastInvoke = time - lastInvokeTime;
+    const timeWaiting = wait - timeSinceLastCall;
     return maxing
       ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
       : timeWaiting;
   }
 
   function shouldInvoke(time) {
-    var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime;
+    const timeSinceLastCall = time - lastCallTime;
+    const timeSinceLastInvoke = time - lastInvokeTime;
 
     // Either this is the first call, activity has stopped and we're at the
     // trailing edge, the system time has gone backwards and we're treating
@@ -127,7 +106,7 @@ function debounce(func, wait, options) {
   }
 
   function timerExpired() {
-    var time = now();
+    const time = now();
     if (shouldInvoke(time)) {
       return trailingEdge(time);
     }
@@ -140,7 +119,7 @@ function debounce(func, wait, options) {
 
     // Only invoke if we have `lastArgs` which means `func` has been
     // debounced at least once.
-    if (trailing && lastArgs) {
+    if (lastArgs) {
       return invokeFunc(time);
     }
     lastArgs = lastThis = undefined;
@@ -160,8 +139,8 @@ function debounce(func, wait, options) {
   }
 
   function debounced() {
-    var time = now(),
-        isInvoking = shouldInvoke(time);
+    const time = now();
+    const isInvoking = shouldInvoke(time);
 
     lastArgs = arguments;
     lastThis = this;
