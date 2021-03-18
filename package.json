@@ -1,0 +1,21 @@
+{
+  "name": "stashbounce",
+  "version": "0.0.1",
+  "description": "A debounce implementation that merges passed in objects before finally sending them to the debounced function",
+  "main": "stashbounce.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "debounce",
+    "merge"
+  ],
+  "author": "JC Brand",
+  "license": "MIT",
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0"
+  }
+}
