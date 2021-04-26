@@ -26,6 +26,18 @@ describe("mergebounce", function () {
     }, 15);
   });
 
+  it("concatenates arrays if concatArrays option is set", function (done) {
+    let invokedData;
+    const mergebounced = mergebounce(data => (invokedData = data), 10, {'concatArrays': true});
+    mergebounced([{a: 2}, 4, 5]);
+    mergebounced([{a: 1}, 2, 3, 4]);
+
+    setTimeout(() => {
+      expect(invokedData).toEqual([{a: 2}, 4, 5, {a: 1}, 2, 3, 4]);
+      done();
+    }, 15);
+  });
+
   it("merges nested arrays uniquely", function (done) {
     let invokedData;
     const mergebounced = mergebounce(data => (invokedData = data), 10);

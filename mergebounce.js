@@ -1,5 +1,6 @@
 import isObject from 'lodash-es/isObject.js';
 import merge from 'lodash-es/merge.js';
+import mergeWith from 'lodash-es/mergeWith.js';
 import now from 'lodash-es/now.js';
 import toNumber from 'lodash-es/toNumber.js';
 
@@ -32,6 +33,11 @@ const nativeMin = Math.min;
  * @param {Object} [options={}] The options object.
  * @param {number} [options.maxWait]
  *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.concatArrays=false]
+ *  By default arrays will be treated as objects when being merged. When
+ *  merging two arrays, the values in the 2nd arrray will replace the
+ *  corresponding values (i.e. those with the same indexes) in the first array.
+ *  When `concatArrays` is set to `true`, arrays will be concatenated instead.
  * @returns {Function} Returns the new debounced function.
  * @example
  *
@@ -49,7 +55,7 @@ const nativeMin = Math.min;
  * // Cancel the trailing debounced invocation.
  * window.addEventListener('popstate', mergebounced.cancel);
  */
-function mergebounce(func, wait, options) {
+function mergebounce(func, wait, options={}) {
   let lastArgs = [],
       lastThis,
       maxWait,
@@ -141,12 +147,22 @@ function mergebounce(func, wait, options) {
     return timerId === undefined ? result : trailingEdge(now());
   }
 
+  function concatArrays(objValue, srcValue) {
+    if (Array.isArray(objValue) && Array.isArray(srcValue)) {
+      return objValue.concat(srcValue);
+    }
+  }
+
   function mergeArguments(args) {
     if (lastArgs.length) {
       if (!args.length) {
         return lastArgs;
       }
-      return merge(lastArgs, args);
+      if (options?.concatArrays) {
+        return mergeWith(lastArgs, args, concatArrays);
+      } else {
+        return merge(lastArgs, args);
+      }
     } else if (args.length) {
       return args;
     } else {

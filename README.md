@@ -12,3 +12,14 @@ on your backend.
 By using `mergebounce`, you can combine multiple calls, each with its own JSON
 object with potentially different keys and values into a single call with a merged JSON
 object.
+
+
+## options
+
+The default `debounce` options are allowed, as well as the following option:
+
+* `concatArrays`:
+    By default arrays will be treated as objects when being merged. When
+    merging two arrays, the values in the 2nd arrray will replace the
+    corresponding values (i.e. those with the same indexes) in the first array.
+    When `concatArrays` is set to `true`, arrays will be concatenated instead.
