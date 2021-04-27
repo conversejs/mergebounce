@@ -38,6 +38,17 @@ describe("mergebounce", function () {
     }, 15);
   });
 
+  it("returns a promise if the promise option is set to true", function (done) {
+    const mergebounced = mergebounce(() => {}, 10, {'promise': true});
+    const result = mergebounced([{a: 2}, 4, 5]);
+    expect(result instanceof Promise).toBe(true);
+    expect(result.isResolved).toBe(false);
+    setTimeout(() => {
+      expect(result.isResolved).toBe(true);
+      done();
+    }, 15);
+  });
+
   it("merges nested arrays uniquely", function (done) {
     let invokedData;
     const mergebounced = mergebounce(data => (invokedData = data), 10);

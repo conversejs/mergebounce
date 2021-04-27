@@ -3,6 +3,7 @@ import merge from 'lodash-es/merge.js';
 import mergeWith from 'lodash-es/mergeWith.js';
 import now from 'lodash-es/now.js';
 import toNumber from 'lodash-es/toNumber.js';
+import { getOpenPromise } from 'openpromise/openpromise.js';
 
 /** Error message constants. */
 const FUNC_ERROR_TEXT = 'Expected a function';
@@ -38,6 +39,13 @@ const nativeMin = Math.min;
  *  merging two arrays, the values in the 2nd arrray will replace the
  *  corresponding values (i.e. those with the same indexes) in the first array.
  *  When `concatArrays` is set to `true`, arrays will be concatenated instead.
+ * @param {boolean} [options.promise=false]
+ *  By default, when calling a merge-debounced function that doesn't execute
+ *  immediately, you'll receive the result from its previous execution, or
+ *  `undefined` if it has never executed before. By setting the `promise`
+ *  option to `true`, a promise will be returned instead of the previous
+ *  execution result when the function is debounced. The promise will resolve
+ *  with the result of the next execution, as soon as it happens.
  * @returns {Function} Returns the new debounced function.
  * @example
  *
@@ -65,6 +73,8 @@ function mergebounce(func, wait, options={}) {
       lastInvokeTime = 0,
       maxing = false;
 
+  let promise = options.promise ? getOpenPromise() : null;
+
   if (typeof func != 'function') {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
@@ -81,7 +91,11 @@ function mergebounce(func, wait, options={}) {
     lastThis = undefined;
     lastInvokeTime = time;
     result = func.apply(thisArg, args);
-    return result;
+    if (options.promise) {
+      promise.resolve(result);
+      promise = getOpenPromise();
+    }
+    return options.promise ? promise : result;
   }
 
   function leadingEdge(time) {
@@ -89,7 +103,7 @@ function mergebounce(func, wait, options={}) {
     lastInvokeTime = time;
     // Start the timer for the trailing edge.
     timerId = setTimeout(timerExpired, wait);
-    return result;
+    return options.promise ? promise : result;
   }
 
   function remainingWait(time) {
@@ -131,7 +145,7 @@ function mergebounce(func, wait, options={}) {
     }
     lastArgs = [];
     lastThis = undefined;
-    return result;
+    return options.promise ? promise : result;
   }
 
   function cancel() {
@@ -192,7 +206,7 @@ function mergebounce(func, wait, options={}) {
     if (timerId === undefined) {
       timerId = setTimeout(timerExpired, wait);
     }
-    return result;
+    return options.promise ? promise : result;
   }
   debounced.cancel = cancel;
   debounced.flush = flush;

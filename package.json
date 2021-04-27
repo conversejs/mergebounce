@@ -14,7 +14,8 @@
   "author": "JC Brand",
   "license": "MIT",
   "dependencies": {
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "openpromise": "conversejs/openpromise#d81f6571c6b6c1fcfa033b5b2f224bf1a853184a"
   },
   "devDependencies": {
     "eslint": "^7.22.0",

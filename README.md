@@ -23,3 +23,10 @@ The default `debounce` options are allowed, as well as the following option:
     merging two arrays, the values in the 2nd arrray will replace the
     corresponding values (i.e. those with the same indexes) in the first array.
     When `concatArrays` is set to `true`, arrays will be concatenated instead.
+* `promise`:
+    By default, when calling a merge-debounced function that doesn't execute
+    immediately, you'll receive the result from its previous execution, or
+    `undefined` if it has never executed before. By setting the `promise`
+    option to `true`, a promise will be returned instead of the previous
+    execution result when the function is debounced. The promise will resolve
+    with the result of the next execution, as soon as it happens.
