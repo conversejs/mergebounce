@@ -3,7 +3,7 @@ import merge from 'lodash-es/merge.js';
 import mergeWith from 'lodash-es/mergeWith.js';
 import now from 'lodash-es/now.js';
 import toNumber from 'lodash-es/toNumber.js';
-import { getOpenPromise } from 'openpromise/openpromise.js';
+import { getOpenPromise } from '@converse/openpromise/openpromise.js';
 
 /** Error message constants. */
 const FUNC_ERROR_TEXT = 'Expected a function';
