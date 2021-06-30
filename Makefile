@@ -1,6 +1,6 @@
 ESLINT			?= ./node_modules/.bin/eslint
 KARMA			?= ./node_modules/.bin/karma
-ROLLUP			?= ./node_modules/.bin/rollup
+ROLLUP			?= ./node_modules/rollup/dist/bin/rollup
 
 node_modules: package.json package-lock.json
 	npm i
@@ -14,8 +14,7 @@ check: eslint dist
 	$(KARMA) start karma.conf.js $(ARGS)
 
 
-dist/mergebounce.js: node_modules mergebounce.js
+dist/mergebounce.js: node_modules mergebounce.js package.json
 	$(ROLLUP) --config rollup.config.js
 
-.PHONY: check
 dist: dist/mergebounce.js

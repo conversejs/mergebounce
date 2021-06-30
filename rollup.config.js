@@ -1,4 +1,5 @@
 import includePaths from 'rollup-plugin-includepaths';
+import { babel } from '@rollup/plugin-babel';
 
 const includePathOptions = {
     include: {},
@@ -17,5 +18,5 @@ export default {
       name: 'mergebounce',
     }
   ],
-  plugins: [ includePaths(includePathOptions) ],
+  plugins: [ includePaths(includePathOptions), babel({ babelHelpers: 'bundled', presets: ['@babel/preset-env'] }) ],
 }
