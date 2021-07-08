@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0 (2021-07-08)
+
+- Add new option `dedupeArrays`, similar to `concatArrays` but duplicate
+  entries are removed.
+
 ## 0.0.3 (2021-06-30)
 
 - Use babel to transpile the source files. Solves issues with optional chaining

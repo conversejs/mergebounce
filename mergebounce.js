@@ -39,6 +39,11 @@ const nativeMin = Math.min;
  *  merging two arrays, the values in the 2nd arrray will replace the
  *  corresponding values (i.e. those with the same indexes) in the first array.
  *  When `concatArrays` is set to `true`, arrays will be concatenated instead.
+ * @param {boolean} [options.dedupeArrays=false]
+ *  This option is similar to `concatArrays`, except that the concatenated
+ *  array will also be deduplicated. Thus any entries that are concatenated to the
+ *  existing array, which are already contained in the existing array, will
+ *  first be removed.
  * @param {boolean} [options.promise=false]
  *  By default, when calling a merge-debounced function that doesn't execute
  *  immediately, you'll receive the result from its previous execution, or
@@ -160,7 +165,11 @@ function mergebounce(func, wait, options={}) {
 
   function concatArrays(objValue, srcValue) {
     if (Array.isArray(objValue) && Array.isArray(srcValue)) {
-      return objValue.concat(srcValue);
+      if (options?.dedupeArrays) {
+        return objValue.concat(srcValue.filter(i => objValue.indexOf(i) === -1));
+      } else {
+        return objValue.concat(srcValue);
+      }
     }
   }
 
@@ -169,7 +178,7 @@ function mergebounce(func, wait, options={}) {
       if (!args.length) {
         return lastArgs;
       }
-      if (options?.concatArrays) {
+      if (options?.concatArrays || options?.dedupeArrays) {
         return mergeWith(lastArgs, args, concatArrays);
       } else {
         return merge(lastArgs, args);

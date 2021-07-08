@@ -38,6 +38,29 @@ describe("mergebounce", function () {
     }, 15);
   });
 
+  it('should dedupe concatenated arrays if "dedupeArrays" is set to true', function (done) {
+    let callCount = 0;
+    const values = [];
+
+    let mergebounced = mergebounce((value) => {
+      ++callCount;
+      values.push(value);
+    }, 32, {'dedupeArrays': true});
+
+    mergebounced(['a']);
+    mergebounced(['a']);
+    mergebounced(['b']);
+    expect(values.length).toBe(0);
+    expect(callCount).toBe(0);
+
+    setTimeout(() => {
+      expect(callCount).toBe(1);
+      expect(values).toEqual([['a', 'b']]);
+      done();
+    }, 128);
+  });
+
+
   it("returns a promise if the promise option is set to true", function (done) {
     const mergebounced = mergebounce(() => {}, 10, {'promise': true});
     const result = mergebounced([{a: 2}, 4, 5]);
