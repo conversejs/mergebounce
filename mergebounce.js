@@ -64,7 +64,7 @@ const nativeMin = Math.min;
  * window.addEventListener('popstate', mergebounced.cancel);
  */
 function mergebounce(func, wait, options={}) {
-  let lastArgs = [],
+  let lastArgs,
       lastThis,
       maxWait,
       result,
@@ -87,8 +87,7 @@ function mergebounce(func, wait, options={}) {
   function invokeFunc(time) {
     const args = lastArgs;
     const thisArg = lastThis;
-    lastArgs = [];
-    lastThis = undefined;
+    lastArgs = lastThis = undefined;
     lastInvokeTime = time;
     result = func.apply(thisArg, args);
     if (options.promise) {
@@ -143,8 +142,7 @@ function mergebounce(func, wait, options={}) {
     if (lastArgs) {
       return invokeFunc(time);
     }
-    lastArgs = [];
-    lastThis = undefined;
+    lastArgs = lastThis = undefined;
     return options.promise ? promise : result;
   }
 
@@ -153,8 +151,7 @@ function mergebounce(func, wait, options={}) {
       clearTimeout(timerId);
     }
     lastInvokeTime = 0;
-    lastArgs = [];
-    lastCallTime = lastThis = timerId = undefined;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
   }
 
   function flush() {
@@ -168,7 +165,7 @@ function mergebounce(func, wait, options={}) {
   }
 
   function mergeArguments(args) {
-    if (lastArgs.length) {
+    if (lastArgs?.length) {
       if (!args.length) {
         return lastArgs;
       }
@@ -177,10 +174,8 @@ function mergebounce(func, wait, options={}) {
       } else {
         return merge(lastArgs, args);
       }
-    } else if (args.length) {
-      return args;
     } else {
-      return [];
+      return args || [];
     }
   }
 
