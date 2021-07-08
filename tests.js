@@ -149,6 +149,14 @@ describe("mergebounce", function () {
     }, 256);
   });
 
+  it("should not flush if it wasn't called at least once", function (done) {
+    let callCount = 0;
+    const mergebounced = mergebounce(() => ++callCount, 15);
+    mergebounced.flush();
+    expect(callCount).toBe(0);
+    done();
+  });
+
   it('should not immediately call `func` when `wait` is `0`', function(done) {
     let callCount = 0;
     const mergebounced = mergebounce(function() { ++callCount; }, 0);
@@ -229,9 +237,7 @@ describe("mergebounce", function () {
   it('should queue a trailing call for subsequent mergebounced calls after `maxWait`', function(done) {
     let callCount = 0;
 
-    let mergebounced = mergebounce(function() {
-      ++callCount;
-    }, 200, { 'maxWait': 200 });
+    let mergebounced = mergebounce(() => ++callCount, 200, { 'maxWait': 200 });
 
     mergebounced();
 
