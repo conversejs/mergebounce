@@ -80,6 +80,11 @@ The default `debounce` options are allowed, as well as the following option:
     merging two arrays, the values in the 2nd arrray will replace the
     corresponding values (i.e. those with the same indexes) in the first array.
     When `concatArrays` is set to `true`, arrays will be concatenated instead.
+* `dedupeArrays`:
+    This option is similar to `concatArrays`, except that the concatenated
+    array will also be deduplicated. Thus any entries that are concatenated to the
+    existing array, which are already contained in the existing array, will
+    first be removed.
 * `promise`:
     By default, when calling a mergebounced function that doesn't execute
     immediately, you'll receive the result from its previous execution, or
