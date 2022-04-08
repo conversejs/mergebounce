@@ -92,14 +92,15 @@ function mergebounce(func, wait, options={}) {
   function invokeFunc(time) {
     const args = lastArgs;
     const thisArg = lastThis;
+    const existingPromise = promise;
     lastArgs = lastThis = undefined;
     lastInvokeTime = time;
     result = func.apply(thisArg, args);
     if (options.promise) {
-      promise.resolve(result);
+      existingPromise.resolve(result);
       promise = getOpenPromise();
     }
-    return options.promise ? promise : result;
+    return options.promise ? existingPromise : result;
   }
 
   function leadingEdge(time) {

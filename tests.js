@@ -180,6 +180,20 @@ describe("mergebounce", function () {
     done();
   });
 
+  it('should resolve when flushing', function(done) {
+    let callCount = 0;
+    const mergebounced = mergebounce(() => ++callCount, 0, {promise: true});
+
+    mergebounced();
+    mergebounced();
+    expect(callCount).toBe(0);
+
+    mergebounced.flush().then(() => {
+      expect(callCount).toBe(1);
+      done();
+    });
+  });
+
   it('should not immediately call `func` when `wait` is `0`', function(done) {
     let callCount = 0;
     const mergebounced = mergebounce(function() { ++callCount; }, 0);
