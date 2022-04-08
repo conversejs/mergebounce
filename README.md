@@ -6,6 +6,11 @@ function to merge all passed in parameters before eventually invoking the deboun
 By doing so, it's possible to combine multiple expensive calls into a single one
 without losing state changes that would have been made by individual calls.
 
+## Install
+
+```
+npm i mergebounce
+```
 
 ## usecases
 
