@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 (Unreleased)
+## 0.1.1 (2022-04-08)
 
 - Bugfix. Return resolved promise when invoking the function.
 
