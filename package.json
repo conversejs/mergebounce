@@ -15,7 +15,7 @@
   "author": "JC Brand",
   "license": "MIT",
   "dependencies": {
-    "@converse/openpromise": "0.0.2",
+    "@converse/openpromise": "0.0.4",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
