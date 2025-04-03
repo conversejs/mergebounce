@@ -1,8 +1,5 @@
-import isObject from 'lodash-es/isObject.js';
 import merge from 'lodash-es/merge.js';
 import mergeWith from 'lodash-es/mergeWith.js';
-import now from 'lodash-es/now.js';
-import toNumber from 'lodash-es/toNumber.js';
 import { getOpenPromise } from '@converse/openpromise';
 
 /** Error message constants. */
@@ -11,6 +8,22 @@ const FUNC_ERROR_TEXT = 'Expected a function';
 /* Built-in method references for those with the same name as other `lodash` methods. */
 const nativeMax = Math.max;
 const nativeMin = Math.min;
+
+function toNumber(value) {
+  if (typeof value === 'number') {
+    return value;
+  }
+  if (typeof value === 'string') {
+    const parsed = parseFloat(value);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  return 0;
+}
+
+function isObject(value) {
+  const type = typeof value;
+  return value != null && (type === 'object' || type === 'function');
+}
 
 /**
  * Creates a debounced function that delays invoking `func` until after `wait`
@@ -132,7 +145,7 @@ function mergebounce(func, wait, options={}) {
   }
 
   function timerExpired() {
-    const time = now();
+    const time = Date.now();
     if (shouldInvoke(time)) {
       return trailingEdge(time);
     }
@@ -161,7 +174,7 @@ function mergebounce(func, wait, options={}) {
   }
 
   function flush() {
-    return timerId === undefined ? result : trailingEdge(now());
+    return timerId === undefined ? result : trailingEdge(Date.now());
   }
 
   function concatArrays(objValue, srcValue) {
@@ -190,7 +203,7 @@ function mergebounce(func, wait, options={}) {
   }
 
   function debounced() {
-    const time = now();
+    const time = Date.now();
     const isInvoking = shouldInvoke(time);
 
     lastArgs = mergeArguments(Array.from(arguments));
