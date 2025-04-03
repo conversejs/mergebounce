@@ -5,7 +5,8 @@
   "url": "https://github.com/conversejs/mergebounce",
   "main": "mergebounce.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup --config rollup.config.js",
+    "test": "karma start karma.conf"
   },
   "keywords": [
     "debounce",
