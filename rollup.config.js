@@ -1,13 +1,5 @@
-import includePaths from 'rollup-plugin-includepaths';
 import { babel } from '@rollup/plugin-babel';
-
-const includePathOptions = {
-    include: {},
-    paths: ['node_modules'],
-    external: [],
-    extensions: ['.js']
-};
-
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default {
   input: 'mergebounce.js',
@@ -18,5 +10,15 @@ export default {
       name: 'mergebounce',
     }
   ],
-  plugins: [ includePaths(includePathOptions), babel({ babelHelpers: 'bundled', presets: ['@babel/preset-env'] }) ],
+  plugins: [
+    nodeResolve({
+      extensions: ['.js']
+    }),
+    babel({ 
+      babelHelpers: 'bundled', 
+      presets: ['@babel/preset-env'],
+      exclude: 'node_modules/**'
+    })
+  ],
+  external: []
 }
