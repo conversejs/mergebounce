@@ -1,6 +1,6 @@
 {
   "name": "mergebounce",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A debounce implementation that merges passed in objects before finally sending them to the debounced function",
   "url": "https://github.com/conversejs/mergebounce",
   "main": "mergebounce.js",
